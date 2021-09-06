@@ -13,27 +13,33 @@ export default class App extends Component {
   handleCounter = (e) => {
     const { name } = e.currentTarget;
 
-    this.setState((prevState) => ({ [name]: prevState[name] + 1 }));
+    // this.setState((prevState) => ({ [name]: prevState[name] + 1 }));
+
+    this.setState({ [name]: this.state[name] + 1 });
   };
 
-  countTotalFeedback = () =>
-    this.state.good + this.state.neutral + this.state.bad;
+  countTotalFeedback = () => {
+    const { good, neutral, bad } = this.state;
+    return good + neutral + bad;
+  };
 
   countPositiveFeedbackPercentage = () =>
-    Math.round(
-      (100 * this.state.good) /
-        (this.state.good + this.state.neutral + this.state.bad)
-    );
+    Math.round((100 * this.state.good) / this.countTotalFeedback());
 
   render() {
+    const arrOptions = Object.keys(this.state);
+    const { good, neutral, bad } = this.state;
     return (
       <SectionTitle>
-        <FeedbackOptions onLeaveFeedback={this.handleCounter} />
+        <FeedbackOptions
+          options={arrOptions}
+          onLeaveFeedback={this.handleCounter}
+        />
 
         <Statistics
-          good={this.state.good}
-          neutral={this.state.neutral}
-          bad={this.state.bad}
+          good={good}
+          neutral={neutral}
+          bad={bad}
           total={this.countTotalFeedback()}
           positivePercentage={this.countPositiveFeedbackPercentage()}
         />
